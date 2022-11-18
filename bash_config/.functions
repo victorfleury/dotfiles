@@ -1,0 +1,48 @@
+function hello_world() {
+	echo "Hello world";
+}
+
+function short_branch_name() {
+    BRANCH=`git rev-parse --abbrev-ref HEAD 2>/dev/null`
+    if [ ! $BRANCH ]; then
+        return $BRANCH
+    fi
+    if [[ $BRANCH =~ "/" ]]; then
+        branch_type=$(echo $BRANCH | cut -c1)"/"
+    fi
+    name=`echo $BRANCH| cut -d "/" -f 2 | cut -d "-" -f 1,2,3`
+    echo "${branch_type}${name}"
+}
+
+function git_info() {
+  branch_name=''
+  dirty_state=''
+  if [[ -n $(short_branch_name) ]];then
+    # Current branch
+    branch_name=`short_branch_name`
+    # Dirty state
+    dirty_state=''
+    if [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit, working tree clean" ]]; then
+      dirty_state=`echo -e " ±"`
+    fi
+    # Ahead/behind
+    # status_branch=`$(git status -bs) | sed 's/\[([a-z]*) \d*\]/\1/g'`
+    # Just in case do a git fetch dry run
+    status_branch=$(git status -bs | awk '{print $3}' | cut -d '[' -f 2)
+    ahead=''
+    behind=''
+    if [[ $status_branch == 'behind' ]]; then
+      number_of_commits=$(git status -bs | awk '{print $3$4}' | cut -d '[' -f 2 | cut -d ']' -f 1 | cut -d 'd' -f 2)
+      behind=" ↓ $number_of_commits"
+    # elif [[ $status_branch == '' ]];then
+    #   git fetch origin $(git rev-parse --abbrev-ref HEAD) --dry-run -n
+    elif [[ $status_branch == 'ahead' ]]; then
+      number_of_commits=$(git status -bs | awk '{print $3$4}' | cut -d '[' -f 2 | cut -d ']' -f 1 | cut -d 'd' -f 2)
+      ahead=" ↑ $number_of_commits"
+    fi
+:
+    echo -e "[$branch_name$dirty_state$ahead$behind]$(SEP3)"
+  elif [[ $(short_branch_name) == '' ]];then
+    echo $(short_branch_name)
+  fi
+}

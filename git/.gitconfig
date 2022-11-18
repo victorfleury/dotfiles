@@ -1,0 +1,13 @@
+[user]
+        name = Victor Fleury
+        email = victor.fleury@gmail.com 
+[color]
+        diff = auto
+        status = auto
+        branch = auto
+        interactive = auto
+[core]
+        editor = nvim
+        excludesfile = /mnt/users/vfleury/.gitignore
+[help]
+        autocorrect = 10
