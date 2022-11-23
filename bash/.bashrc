@@ -32,3 +32,10 @@ do
 done
 
 bind -f /home/victor/.inputrc
+
+export BG=light
+current_theme=`sed -n "2p" .config/kitty/current-theme.conf`
+if [[ "$current_theme" == *"Dark"* ]];
+then
+    export BG=dark
+fi

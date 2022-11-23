@@ -2,5 +2,6 @@ alias ll="ls -alh"
 alias l="ls -alh"
 alias lt="ls -alht"
 alias dotfiles="cd ~/.dotfiles"
-alias dark="kitty +kitten themes --reload-in=all Solarized Dark - Patched"
-alias light="kitty +kitten themes --reload-in=all Solarized Light"
+alias dark="kitty +kitten themes --reload-in=all Everforest Dark Soft && export BG=dark"
+alias light="kitty +kitten themes --reload-in=all Everforest Light Soft && export BG=light"
+
