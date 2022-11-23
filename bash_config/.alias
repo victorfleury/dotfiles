@@ -1,6 +1,0 @@
-alias ll="ls -alh"
-alias l="ls -alh"
-alias lt="ls -alht"
-alias dotfiles="cd ~/.dotfiles"
-alias dark="kitty +kitten themes --reload-in=all Solarized Dark - Patched"
-alias light="kitty +kitten themes --reload-in=all Solarized Light"

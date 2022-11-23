@@ -1,14 +1,9 @@
 # .bash_profile
-
-# Get the aliases and functions
-if [ -f ~/.bashrc ]; then
-	. ~/.bashrc
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
 fi
-
-# User specific environment and startup programs
-
-for DOTFILE in `find /home/victor/.dotfiles`
-do
-    [ -f "$DOTFILE" ] && source "$DOTFILE"
-done
 

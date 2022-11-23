@@ -1,6 +1,7 @@
 [user]
         name = Victor Fleury
-        email = victor.fleury@gmail.com 
+        ;email = victor.fleury@gmail.com 
+	email = victor.fleury@gmail.com
 [color]
         diff = auto
         status = auto
@@ -8,6 +9,9 @@
         interactive = auto
 [core]
         editor = nvim
-        excludesfile = /mnt/users/vfleury/.gitignore
+        excludesfile = /home/victor/.gitignore
 [help]
         autocorrect = 10
+[safe]
+	directory = /mnt/vfleury/rdoenv/rdo_animreview_core
+	directory = /mnt/vfleury/rdoenv/rdo_animation_publisher
