@@ -1,7 +1,10 @@
+alias reload="source ~/.bashrc"
 alias ll="ls -alh"
 alias l="ls -alh"
 alias lt="ls -alht"
 alias dotfiles="cd ~/.dotfiles"
 alias dark="kitty +kitten themes --reload-in=all Everforest Dark Soft && export BG=dark"
 alias light="kitty +kitten themes --reload-in=all Everforest Light Soft && export BG=light"
-
+alias code="cd ~/code"
+alias mount_work="sudo sshfs -o allow_other vfleury@mtl-vdi-wrk117l:/mnt/users/vfleury /mnt/vfleury"
+alias umount_work="sudo umount /mnt/vfleury"

@@ -8,7 +8,7 @@ fi
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
 then
-    PATH="$HOME/.local/bin:$HOME/bin:$HOME/.dotfiles/bin:$PATH"
+    PATH="$HOME/.local/bin:$HOME/bin:$HOME/.dotfiles/bin:/opt/rez/bin/rez/:$PATH"
 fi
 export PATH
 
@@ -34,8 +34,15 @@ done
 bind -f /home/victor/.inputrc
 
 export BG=light
-current_theme=`sed -n "2p" .config/kitty/current-theme.conf`
+current_theme=`sed -n "2p" $HOME/.config/kitty/current-theme.conf`
 if [[ "$current_theme" == *"Dark"* ]];
 then
     export BG=dark
 fi
+
+# Github/Bitbucket accounts for git
+export BITBUCKET_NAME="Victor Fleury"
+export BITBUCKET_EMAIL="vfleury@rodeofx.com"
+export GITHUB_NAME="Victor Fleury"
+export GITHUB_EMAIL="victor.fleury@gmail.com"
+

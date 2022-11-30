@@ -1,6 +1,7 @@
 [user]
         name = Victor Fleury
-        email = victor.fleury@gmail.com 
+        # email = victor.fleury@gmail.com 
+        email = vfleury@rodeofx.com
 [color]
         diff = auto
         status = auto
@@ -8,6 +9,6 @@
         interactive = auto
 [core]
         editor = nvim
-        excludesfile = /mnt/users/vfleury/.gitignore
+        excludesfile = /home/victor/.gitignore
 [help]
         autocorrect = 10
