@@ -54,4 +54,9 @@ return require('packer').startup(function(use)
   }
   use 'preservim/nerdcommenter' -- Commenter
   use {'romgrk/barbar.nvim', wants = 'nvim-web-devicons'} -- tabs
+
+  -- Debug Adapter Protocol : DAP
+  use 'mfussenegger/nvim-dap'
+  use 'mfussenegger/nvim-dap-python'
+  use 'rcarriga/nvim-dap-ui'
 end)
