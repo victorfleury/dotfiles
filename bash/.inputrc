@@ -1,6 +1,6 @@
 # Using arrow keys to search history
-# "\e[B": history-search-forward
-# "\e[A": history-search-backward
-# # Using CTRL+arrows to navigate between words
-# "\e[1;5C": forward-word
-# "\e[1;5D": backward-word
+"\e[B": history-search-forward
+"\e[A": history-search-backward
+# Using CTRL+arrows to navigate between words
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word

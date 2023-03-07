@@ -72,3 +72,4 @@ function fetchout() {
         done
     fi
 }
+

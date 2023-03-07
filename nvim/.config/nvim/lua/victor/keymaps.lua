@@ -20,3 +20,7 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>")
 -- Telescope
 vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>")
 vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>")
+
+-- Barbar
+vim.keymap.set("n", "<Tab>", ":BufferNext<CR>", { desc = "Move to next tab" })
+vim.keymap.set("n", "<S-Tab>", ":BufferPrevious<CR>", { desc = "Move to next tab" })
