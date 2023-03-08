@@ -29,12 +29,12 @@ export PATH=$PATH:$GOPATH/bin
 
 # unset rc
 
-for DOTFILE in `find /home/victor/.dotfiles/bash_config`
+for DOTFILE in `find $HOME/.dotfiles/bash_config`
 do
 	[ -f "$DOTFILE" ] && . "$DOTFILE"
 done
 
-bind -f /home/victor/.inputrc
+bind -f $HOME/.inputrc
 
 export BG=light
 current_theme=`sed -n "2p" $HOME/.config/kitty/current-theme.conf`
