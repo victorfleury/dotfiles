@@ -90,3 +90,8 @@ function nvimc () {
     name=${PWD##*/}
     docker run --rm --name $name -v $HOME/.config/batman/.local/share/:/home/vfleury/.local/share -v $HOME/.config/batman/init.lua:/home/vfleury/.config/nvim/init.lua -v $HOME:/mnt/users/vfleury -w="$(pwd)" --network=host --entrypoint="sh" -it simple2
 }
+
+function rr() {
+    message=`git log --oneline -1 --grep="\[" --skip=1 --pretty=%B`
+    rez release -m "${message}" --no-latest
+}
