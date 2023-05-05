@@ -8,13 +8,14 @@ fi
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
 then
-    PATH="$HOME/.local/bin:$HOME/bin:$HOME/.dotfiles/bin:/opt/rez/bin/rez/:$PATH"
+    PATH="$HOME/.local/bin:$HOME/bin:$HOME/.dotfiles/scripts:/opt/rez/bin/rez/:$PATH"
 fi
 export PATH
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH
 export PATH=$PATH:$GOPATH/bin
+export PATH=$HOME/.dotfiles/scripts/:$PATH
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 

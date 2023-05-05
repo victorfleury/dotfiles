@@ -51,6 +51,14 @@ function get_branches() {
     git branch -r | tail -n +2 | sed "s|^[^/]*/||" | sort
 }
 
+function prefix_commit_message() {
+    _branch_type=$(git rev-parse --abbrev-ref HEAD 2>/dev/null| cut -d "/" -f 1)
+    _ticket_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null| cut -d "/" -f 2 | cut -d "-" -f 1,2,3)
+    jira_issue=$_ticket_name
+
+    echo "[$_branch_type][${jira_issue%-*}]"
+}
+
 function fetchout() {
     branches_were=$(get_branches)
     git fetch
@@ -61,15 +69,24 @@ function fetchout() {
     if [ ${#choices[@]} -eq 1 ]
     then
         git checkout "${choices[@]}"
-        exit 0
+        return 0
     elif (( ${#choices[@]} ))
     then
         echo
         select branch in "${choices[@]}"
         do
             git checkout "$branch"
-            exit 0
+            return 0
         done
     fi
 }
 
+function nvim () {
+    name=${PWD##*/}
+    docker run --rm --name $name -v $HOME/.config/batman/.local/share/:/home/vfleury/.local/share -v $HOME/.config/batman/init.lua:/home/vfleury/.config/nvim/init.lua -v $HOME:/mnt/users/vfleury -w="$(pwd)" --network=host --entrypoint="nvim" -it simple2
+}
+
+function nvimc () {
+    name=${PWD##*/}
+    docker run --rm --name $name -v $HOME/.config/batman/.local/share/:/home/vfleury/.local/share -v $HOME/.config/batman/init.lua:/home/vfleury/.config/nvim/init.lua -v $HOME:/mnt/users/vfleury -w="$(pwd)" --network=host --entrypoint="sh" -it simple2
+}
