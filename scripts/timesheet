@@ -1,0 +1,93 @@
+#!/usr/bin/python
+import argparse
+import os
+import datetime
+from datetime import timedelta
+import logging
+import sys
+
+sys.path.append("/rdo/software/rez/packages/shotgun_api3/3.1.1-rdo-1.1.1")
+
+from shotgun_api3 import Shotgun
+
+
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.INFO)
+HANDLER = logging.FileHandler('/mnt/users/vfleury/timesheet.log')
+FORMATTER = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+HANDLER.setFormatter(FORMATTER)
+LOGGER.addHandler(HANDLER)
+
+SG_SCRIPT_NAME = "The God Damn Batman"
+SG_SCRIPT_KEY = "32d684ac5a428cf9ac0fc516bba2eb7f0f150d03"
+
+DEV_TASK = {"type": "Task", "id": 1756538}
+DEV_PROJECT = {"type": "Project", "id": 2}
+
+SG = Shotgun("https://shotgun.rodeofx.com", SG_SCRIPT_NAME, SG_SCRIPT_KEY)
+
+
+def build_parser():
+    """Build the parser for the command line args.
+
+    Returns:
+        ArgumentParser: The parser
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--user",
+        "-u",
+        required=True,
+        help="A valid SG username",
+    )
+    return parser
+
+def getUser(user):
+    """Get the user from SG
+
+    Args:
+        user (str): A username
+
+    Returns:
+        dict: The shotgun user
+    """
+    return SG.find_one("HumanUser", [["login", "is", user]])
+
+
+def createTimeLog(user):
+    """Create the SG timelog.
+
+    Args:
+        user (dict): A valid SG user
+
+    """
+    date = datetime.datetime.today()
+    timelog_already_exists = SG.find_one(
+        "TimeLog",
+        [
+            ["date", "is", date.strftime("%Y-%m-%d")],
+            ["user", "is", user],
+        ],
+    )
+    if timelog_already_exists:
+        LOGGER.error("Timelog already exists for currrent date: %s", timelog_already_exists)
+        return
+    result = SG.create(
+        "TimeLog",
+        {
+            "entity": DEV_TASK,
+            "user": user,
+            "sg_duration_hours": 8.0,
+            "date": date.strftime("%Y-%m-%d"),
+            "project": DEV_PROJECT
+        }
+    )
+    # print("Result :", result)
+    LOGGER.info("Timelog created : %s", result)
+
+
+if __name__ == "__main__":
+    parser = build_parser()
+    args = parser.parse_args()
+    createTimeLog(getUser(args.user))
+    print("Done")

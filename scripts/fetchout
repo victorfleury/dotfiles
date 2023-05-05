@@ -1,0 +1,25 @@
+#!/bin/bash
+
+get_branches() {
+    git branch -r | tail -n +2 | sed "s|^[^/]*/||" | sort
+}
+
+branches_were=$(get_branches)
+git fetch
+branches_are=$(get_branches)
+
+mapfile -t choices < <(diff --old-line-format="" --unchanged-line-format="" <(echo "$branches_were") <(echo "$branches_are"))
+
+if [ ${#choices[@]} -eq 1 ]
+then
+    git checkout "${choices[0]}"
+    # exit 0
+elif (( ${#choices[@]} ))
+then
+    echo
+    select branch in "${choices[@]}"
+    do
+        git checkout "$branch"
+        # exit 0
+    done
+fi

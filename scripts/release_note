@@ -1,0 +1,16 @@
+#!/usr/bin/python
+import os
+from git import Repo
+
+"""
+https://stackoverflow.com/questions/8136178/git-log-between-tags
+"""
+
+"""
+$ git log --pretty="- %s" rdo_animreview_core-4.9.2...rdo_animreview_core-4.4.1 --no-merges
+"""
+
+def main():
+    """Main function."""
+    
+

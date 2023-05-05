@@ -1,0 +1,247 @@
+#!/usr/bin/python
+"""Programmatically create a PR.
+
+This script will create a PR from the command line.
+You need to set up a personnal access token in Bitbucket.
+Store it in a file somewhere in your $HOME
+When you run the script it will open your favorite editor with the Rodeo PR template
+so you only have to fill the bits you need.
+You can set default reviewers like this :
+    [
+        {"user": {"name": "foo"}},
+        {"user": {"name": "bar"}},
+        ...
+    ]
+Import notice, it needs to be ran from a git repository.
+PR title will be the last commit message.
+"""
+import argparse
+import logging
+import os
+import requests
+import subprocess
+import sys
+import tempfile
+
+from git import InvalidGitRepositoryError, Repo
+
+
+LOG = logging.getLogger()
+LOG.setLevel(logging.DEBUG)
+OUT_HANDLER = logging.StreamHandler(stream=sys.stdout)
+LOG.addHandler(OUT_HANDLER)
+
+
+PR_TEMPLATE = """#### Purpose of the PR
+
+#### Overview of the changes
+
+#### Type of feedback wanted
+
+#### Where should the reviewer start looking at?
+
+#### Potential risks of this change
+
+#### Relationship with other PRs
+
+"""
+
+DEFAULT_REVIEWERS = [
+    {"user": {"name": "bramoul"}},
+    {"user": {"name": "jcarvalho"}},
+    {"user": {"name": "agjolly"}},
+    {"user": {"name": "andyl"}},
+    {"user": {"name": "jdubuisson"}},
+    {"user": {"name": "alima"}},
+    {"user": {"name": "lchikar"}},
+    {"user": {"name": "ldepoix"}},
+    {"user": {"name": "elabrosse"}},
+]
+
+USER_URL_TEMPLATE = "https://bitbucket.rodeofx.com/rest/api/1.0/users/vfleury/repos/home_repo/pull-requests"  # noqa
+URL_TEMPLATE = "https://bitbucket.rodeofx.com/rest/api/1.0/projects/{PROJECT}/repos/{SLUG}/pull-requests"  # noqa
+
+
+def get_token():
+    """Get the token for the connection to BitBucket.
+
+    Returns:
+        str: The token.
+    """
+    with open("{home}/token.tk".format(home=os.environ.get("HOME")), "r") as token_file:
+        return token_file.readlines()[0].strip("\n")
+
+
+def raw_input_editor(default=None, editor=None):
+    """Using an editor like git would do to fill up the template for the PR
+
+    Args:
+        default (str, optional): A default string. Defaults to None.
+        editor (str, optional): Default editor. Defaults to None.
+
+    Returns:
+        str: The content of the filled tempfile
+    """
+    with tempfile.NamedTemporaryFile(mode="r+") as tmpfile:
+        if default:
+            tmpfile.write(default)
+            tmpfile.flush()
+        subprocess.check_call([editor or get_editor(), tmpfile.name])
+        tmpfile.seek(0)
+        return tmpfile.read().strip()
+
+
+def get_editor():
+    """Get the editor.
+
+    Returns:
+        str: The editor to launch. Defaults to Vim
+    """
+    return os.environ.get("VISUAL") or os.environ.get("EDITOR") or "vim"
+
+
+def get_repo():
+    """Get the Repo object.
+
+    Returns:
+        git.Repo: A Repository object
+    """
+    current_directory = os.getcwd()
+    LOG.debug("[i] Curent folder is : %s " % current_directory)
+    try:
+        repository = Repo(current_directory, search_parent_directories=True)
+    except InvalidGitRepositoryError:
+        LOG.error("[X] Current directory is not a valid git repository.")
+        return
+    return repository
+
+
+def get_repo_url():
+    """Get the repo information to build the REST endpoint
+
+    Returns:
+        str: The REST url formatted.
+    """
+    repository = get_repo()
+
+    try:
+        ssh_url = repository.remote().url
+    except ValueError:
+        LOG.error("[X] Remote has no origin")
+        return
+    LOG.debug("[i] %s " % ssh_url)
+    project, slug_name = ssh_url.split("/")[-2:]
+    slug_name = slug_name.strip(".git")
+
+    return URL_TEMPLATE.format(PROJECT=project.upper(), SLUG=slug_name)
+
+
+def publish_pr(url, data):
+    """Publish the pull request
+
+    Args:
+        url (str): The REST endpoint to publish the PR
+        data (dict): The data to publish.
+    Returns:
+        bool: True if publish is successful False otherwise.
+    """
+    success = False
+    headers = {
+        "authorization": "Bearer {0}".format(get_token()),
+        "content-type": "application/json",
+    }
+    req = requests.post(url, json=data, headers=headers)
+    if req.status_code == 201:
+        LOG.info("[*] Success")
+        success = True
+    else:
+        LOG.error("[X] %s", req.text)
+    return success
+
+
+def request_data():
+    """Format the request data.
+
+    Returns:
+        dict: The data for the request
+    """
+    repo = get_repo()
+    current_branch = repo.active_branch
+    default_destination_branch = "refs/heads/dev"
+    if "dev" not in [b.name for b in repo.branches]:
+        default_destination_branch = "refs/heads/master"
+
+    # Dealing with the preUsd branches...
+    other_destination_branches = ["master", "dev_preUsd", "dev_usd", "dev"]
+    if any([branch.name in other_destination_branches for branch in repo.branches]):
+        LOG.info("[i] Default dev branch cannot be used for destination branch.")
+        LOG.info("[i] Choose one of the following branches :")
+        filtered_branches = [
+            branch.name
+            for branch in repo.branches
+            if branch.name in other_destination_branches
+        ]
+        for i, branch in enumerate(filtered_branches):
+            LOG.info("%s : %s", i, branch)
+        branch_idx = int(raw_input("Choose # : "))
+        LOG.info("[i] You chose branch : %s", filtered_branches[branch_idx])
+        default_destination_branch = "refs/heads/{}".format(
+            filtered_branches[branch_idx],
+        )
+
+    description = raw_input_editor(default=PR_TEMPLATE)
+    with tempfile.NamedTemporaryFile(mode="w", delete=False) as filled_pr:
+        filled_pr.write(description)
+        LOG.debug("[i] Filled PR saved at {}".format(filled_pr.name))
+    title = repo.commit().message
+    print {
+        "description": description,
+        "fromRef": {"id": current_branch.path},
+        "toRef": {"id": default_destination_branch},
+        "state": "OPEN",
+        "title": title,
+        "reviewers": DEFAULT_REVIEWERS,
+    }
+    return {
+        "description": description,
+        "fromRef": {"id": current_branch.path},
+        "toRef": {"id": default_destination_branch},
+        "state": "OPEN",
+        "title": title,
+        "reviewers": DEFAULT_REVIEWERS,
+    }
+
+
+def main(args):
+    """Main process
+
+    Args:
+        args (args): The args from the parser
+    """
+    # content = raw_input_editor(default=PR_TEMPLATE)
+    url = get_repo_url()
+    if not url:
+        LOG.error("[X] Could not determine the REST endpoint.")
+        return
+    data = request_data()
+
+    if args.dryrun:
+        LOG.info("[*] Dry run is on, stopping there.")
+        return
+
+    if publish_pr(url, data):
+        LOG.info("[*] Successfully published the PR")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--dryrun",
+        default=False,
+        action="store_true",
+        help="Run through the process without creating the PR",
+    )
+
+    args = parser.parse_args()
+
+    main(args)
