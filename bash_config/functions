@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 function hello_world() {
 	echo "Hello world";
 }
@@ -73,3 +75,61 @@ function fetchout() {
     fi
 }
 
+# Function to ssh and launch tmux
+#function www() {
+  #folder="~/rdoenv/"$1
+  #name=$1
+  #echo $folder
+  ##ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; docker attach ${name}; bash --login"
+  #ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; launch_container ${folder}; bash --login"
+#}
+
+function www() {
+  #while test $# -gt 0; do
+  while [ "$1" != "" ]; do
+    case $1 in
+      -h| --help)
+        echo "Super duper script to log into work and open nvim to the given folder"
+        echo " "
+        echo "options:"
+        echo "-h, --help        Displays the help message and quits"
+        echo "-d, --directory   SSH into given directory"
+        echo "-n, --nvim        Launches NVIM. Attaches to the matching docker container from -d"
+        break
+        ;;
+      -d | --directory)
+        shift
+        if test $# -gt 0; then
+          echo "-d You have called the command with $1"
+        else
+          echo "-d was not specified, ssh into default dir"
+        fi
+        DIRECTORY=$1
+        ;;
+      --nvim)
+        echo "You have called the script wioth nvim $2"
+        LAUNCH_NVIM=true
+        ;;
+      *)
+        echo "Default behaviour"
+        break
+    esac
+    shift
+  done
+  
+  if [ -z $DIRECTORY ];then
+    echo "Running : ssh -t vfleury@mtl-vdi-wrk117l"
+    ssh -t vfleury@mtl-vdi-wrk117l
+  elif [ -n $DIRECTORY ]; then
+    folder="~/rdoenv/"$DIRECTORY
+    if [ $LAUNCH_NVIM ];then
+      name=$DIRECTORY
+      echo "Running : ssh -t vfleury@mtl-vdi-wrk117l \"cd ${folder}; launch_container ${name}; bash --login\""
+      ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; launch_container ${name}; bash --login"
+    else
+      echo "Running : ssh -t vfleury@mtl-vdi-wrk117l \"cd ${folder}; bash --login\""
+      ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; bash --login"
+    fi
+  fi 
+
+}
