@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 function hello_world() {
 	echo "Hello world";
 }
