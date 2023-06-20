@@ -63,6 +63,11 @@ require('packer').startup(function(use)
             require("true-zen").setup {}
     end,
     })
+  use({
+    "windwp/nvim-autopairs",
+    config = function() require("nvim-autopairs").setup {} 
+    end,
+    })
 
   -- Fuzzy Finder (files, lsp, etc)
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }

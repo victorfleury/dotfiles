@@ -83,6 +83,7 @@ function fetchout() {
 
 function nvim () {
     name=${PWD##*/}
+    # docker container ls -la --format "{{.Names}}"
     docker run --rm --name $name -v $HOME/.config/batman/.local/share/:/home/vfleury/.local/share -v $HOME/.config/batman/init.lua:/home/vfleury/.config/nvim/init.lua -v $HOME:/mnt/users/vfleury -w="$(pwd)" --network=host --entrypoint="nvim" -it simple2
 }
 
@@ -94,4 +95,13 @@ function nvimc () {
 function rr() {
     message=`git log --oneline -1 --grep="\[" --skip=1 --pretty=%B`
     rez release -m "${message}" --no-latest
+}
+
+function launch_container() {
+    if [ $( docker ps -q -f name=$1 ) ]
+    then
+        docker attach $1
+    else
+        nvim
+    fi
 }
