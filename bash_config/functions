@@ -83,29 +83,52 @@ function fetchout() {
     fi
 }
 
-function nvim () {
-    name=${PWD##*/}
-    # docker container ls -la --format "{{.Names}}"
-    docker run --rm --name $name -v $HOME/.config/batman/.local/share/:/home/vfleury/.local/share -v $HOME/.config/batman/init.lua:/home/vfleury/.config/nvim/init.lua -v $HOME:/mnt/users/vfleury -w="$(pwd)" --network=host --entrypoint="nvim" -it simple2
-}
+function www() {
+  #while test $# -gt 0; do
+  while [ "$1" != "" ]; do
+    case $1 in
+      -h| --help)
+        echo "Super duper script to log into work and open nvim to the given folder"
+        echo " "
+        echo "options:"
+        echo "-h, --help        Displays the help message and quits"
+        echo "-d, --directory   SSH into given directory"
+        echo "-n, --nvim        Launches NVIM. Attaches to the matching docker container from -d"
+        break
+        ;;
+      -d | --directory)
+        shift
+        if test $# -gt 0; then
+          echo "-d You have called the command with $1"
+        else
+          echo "-d was not specified, ssh into default dir"
+        fi
+        DIRECTORY=$1
+        ;;
+      --nvim)
+        echo "You have called the script wioth nvim $2"
+        LAUNCH_NVIM=true
+        ;;
+      *)
+        echo "Default behaviour"
+        break
+    esac
+    shift
+  done
 
-function nvimc () {
-    name=${PWD##*/}
-    docker run --rm --name $name -v $HOME/.config/batman/.local/share/:/home/vfleury/.local/share -v $HOME/.config/batman/init.lua:/home/vfleury/.config/nvim/init.lua -v $HOME:/mnt/users/vfleury -w="$(pwd)" --network=host --entrypoint="sh" -it simple2
-}
-
-function rr() {
-    message=`git log --oneline -1 --grep="\[" --skip=1 --pretty=%B`
-    rez release -m "${message}" --no-latest
-}
-
-function launch_container() {
-    if [ $( docker ps -q -f name=$1 ) ]
-    then
-        docker attach $1
+  if [ -z $DIRECTORY ];then
+    echo "Running : ssh -t vfleury@mtl-vdi-wrk117l"
+    ssh -t vfleury@mtl-vdi-wrk117l
+  elif [ -n $DIRECTORY ]; then
+    folder="~/rdoenv/"$DIRECTORY
+    if [ $LAUNCH_NVIM ];then
+      name=$DIRECTORY
+      echo "Running : ssh -t vfleury@mtl-vdi-wrk117l \"cd ${folder}; launch_container ${name}; bash --login\""
+      ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; launch_container ${name}; bash --login"
     else
-        nvim
+      echo "Running : ssh -t vfleury@mtl-vdi-wrk117l \"cd ${folder}; bash --login\""
+      ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; bash --login"
     fi
+  fi 
+
 }
-
-
