@@ -49,4 +49,4 @@ export BITBUCKET_NAME="Victor Fleury"
 export BITBUCKET_EMAIL="vfleury@rodeofx.com"
 export GITHUB_NAME="Victor Fleury"
 export GITHUB_EMAIL="victor.fleury@gmail.com"
-
+export VPN_STATUS_NOTIFICATION=0

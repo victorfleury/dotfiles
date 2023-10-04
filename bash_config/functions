@@ -91,9 +91,10 @@ function www() {
         echo "Super duper script to log into work and open nvim to the given folder"
         echo " "
         echo "options:"
-        echo "-h, --help        Displays the help message and quits"
-        echo "-d, --directory   SSH into given directory"
-        echo "-n, --nvim        Launches NVIM. Attaches to the matching docker container from -d"
+        echo "-h, --help         Displays the help message and quits"
+        echo "-d, --directory    SSH into given directory"
+        echo "-t, --tmux-session SSH to the machine and connect to TMUX session" 
+        echo "-n, --nvim         Launches NVIM. Attaches to the matching docker container from -d"
         break
         ;;
       -d | --directory)
@@ -104,6 +105,15 @@ function www() {
           echo "-d was not specified, ssh into default dir"
         fi
         DIRECTORY=$1
+        ;;
+      -t | --tmux-session)
+        shift
+        if test $# -gt 0; then
+          echo "-t you have called the command with $1"
+        else
+          echo "-t not specified, ssh only."
+        fi
+        TMUX_SESSION=$1
         ;;
       --nvim)
         echo "You have called the script wioth nvim $2"
@@ -116,10 +126,12 @@ function www() {
     shift
   done
 
-  if [ -z $DIRECTORY ];then
+  if [[ -z $DIRECTORY && -z $TMUX_SESSION ]];then
     echo "Running : ssh -t vfleury@mtl-vdi-wrk117l"
     ssh -t vfleury@mtl-vdi-wrk117l
-  elif [ -n $DIRECTORY ]; then
+  fi
+  if [[ -n $DIRECTORY && ! $TMUX_SESSION ]]; then
+    echo "THIS IS DIRECTORY : ${DIRECTORY}"
     folder="~/rdoenv/"$DIRECTORY
     if [ $LAUNCH_NVIM ];then
       name=$DIRECTORY
@@ -128,7 +140,28 @@ function www() {
     else
       echo "Running : ssh -t vfleury@mtl-vdi-wrk117l \"cd ${folder}; bash --login\""
       ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; bash --login"
+      exit 0 
     fi
+  fi
+  if [ -n $TMUX_SESSION ];then
+    echo "Running : ssh -t vfleury@10.12.12.9 \"tmux at -t ${TMUX_SESSION}; bash --login\""
+    ssh -t vfleury@10.12.12.9 "tmux at -t ${TMUX_SESSION}; bash --login"
   fi 
 
+}
+
+
+function stm() {
+  case $1 in
+    -h | --help)
+      echo "(S)SH (T)mux (M)anager - Not affiliated to the STM :P"
+      echo "SSH to the Rodeo machine and attach to TMUX session"
+      echo "options : "
+      echo "-h, --help         Displays the help message and quits"
+      ;;
+    -t | --tmux-session)
+      shift
+      echo "Running : ssh -t vfleury@10.12.12.9 \"tmux at -t $1; bash --login\""
+      ;;
+  esac
 }
