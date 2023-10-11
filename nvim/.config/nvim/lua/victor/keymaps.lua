@@ -19,6 +19,7 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>")
 
 -- Telescope
 vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>")
+vim.keymap.set("n", "<leader>fff", ":Telescope find_files hidden=True<CR>")
 vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>")
 
 -- Barbar

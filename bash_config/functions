@@ -106,15 +106,6 @@ function www() {
         fi
         DIRECTORY=$1
         ;;
-      -t | --tmux-session)
-        shift
-        if test $# -gt 0; then
-          echo "-t you have called the command with $1"
-        else
-          echo "-t not specified, ssh only."
-        fi
-        TMUX_SESSION=$1
-        ;;
       --nvim)
         echo "You have called the script wioth nvim $2"
         LAUNCH_NVIM=true
@@ -137,17 +128,8 @@ function www() {
       name=$DIRECTORY
       echo "Running : ssh -t vfleury@mtl-vdi-wrk117l \"cd ${folder}; launch_container ${name}; bash --login\""
       ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; launch_container ${name}; bash --login"
-    else
-      echo "Running : ssh -t vfleury@mtl-vdi-wrk117l \"cd ${folder}; bash --login\""
-      ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; bash --login"
-      exit 0 
     fi
   fi
-  if [ -n $TMUX_SESSION ];then
-    echo "Running : ssh -t vfleury@10.12.12.9 \"tmux at -t ${TMUX_SESSION}; bash --login\""
-    ssh -t vfleury@10.12.12.9 "tmux at -t ${TMUX_SESSION}; bash --login"
-  fi 
-
 }
 
 
@@ -163,5 +145,7 @@ function stm() {
       shift
       echo "Running : ssh -t vfleury@10.12.12.9 \"tmux at -t $1; bash --login\""
       ;;
+    *)
+      ssh -t vfleury@10.12.12.9 "t; bash --login"
   esac
 }
