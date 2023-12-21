@@ -156,6 +156,7 @@ set $ws10 "10:  Spotify"
 
 # Assign windows to workspaces
 assign [class="Spotify"]  $ws10
+assign [class="firefox"]  $ws2
 assign [class="Signal"]  $ws5
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -169,6 +170,9 @@ bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
 bindsym $mod+0 workspace number $ws10
 
+# Launch on startup
+exec --no-startup-id flatpak run com.spotify.Client 
+exec --no-startup-id firefox 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number $ws1
 bindsym $mod+Shift+2 move container to workspace number $ws2
@@ -187,8 +191,8 @@ bindsym $mod+Ctrl+Left move workspace to output left
 
 # Lock screen
 bindsym $mod+Ctrl+l exec "betterlockscreen -l blur"
-exec --no-startup-id xautolock -time 3 -locker "betterlockscreen -l blur" -detectsleep
-exec --no-startup-id xautolock -time 7 -locker "systemctl suspend" &
+exec --no-startup-id xautolock -time 10 -locker "betterlockscreen -l blur" -detectsleep
+exec --no-startup-id xautolock -time 90 -locker "systemctl suspend" &
 
 
 # reload the configuration file

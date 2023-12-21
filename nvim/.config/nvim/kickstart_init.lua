@@ -63,11 +63,10 @@ require('packer').startup(function(use)
             require("true-zen").setup {}
     end,
     })
-  use({
+  use {
     "windwp/nvim-autopairs",
-    config = function() require("nvim-autopairs").setup {} 
-    end,
-    })
+    config = function() require("nvim-autopairs").setup {} end
+  }
 
   -- Python docstrings
   use 'heavenshell/vim-pydocstring'
@@ -525,6 +524,14 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
+
+-- If you want insert `(` after select function or method item
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+--local cmp = require('cmp')
+cmp.event:on(
+  'confirm_done',
+  cmp_autopairs.on_confirm_done()
+)
 
 -- Custom keymaps
 vim.keymap.set('n', '<leader>fmt', ':!black %<CR>')

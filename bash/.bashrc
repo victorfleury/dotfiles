@@ -16,6 +16,7 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH
 export PATH=$PATH:$GOPATH/bin
 export PATH=$HOME/.dotfiles/scripts/:$PATH
+export PATH=$HOME/.cargo/bin:$PATH
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
@@ -50,3 +51,13 @@ export BITBUCKET_EMAIL="vfleury@rodeofx.com"
 export GITHUB_NAME="Victor Fleury"
 export GITHUB_EMAIL="victor.fleury@gmail.com"
 export VPN_STATUS_NOTIFICATION=0
+
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+# Load pyenv-virtualenv automatically by adding
+# the following to ~/.bashrc:
+
+# eval "$(pyenv virtualenv-init -)"
+eval "$(zoxide init bash)"
