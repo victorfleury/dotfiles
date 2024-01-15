@@ -8,7 +8,7 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
   -- Simple plugins can be specified as strings
-  use 'nvim-treesitter/nvim-treesitter' --Syntax highlighting
+  --use 'nvim-treesitter/nvim-treesitter' --Syntax highlighting
   use { -- LSP Configuration & Plugins
       'neovim/nvim-lspconfig',
       requires = {
@@ -57,6 +57,12 @@ return require('packer').startup(function(use)
   }
   use 'preservim/nerdcommenter' -- Commenter
   use {'romgrk/barbar.nvim', wants = 'nvim-web-devicons'} -- tabs
+  use {
+    "windwp/nvim-autopairs",
+    config = function() require("nvim-autopairs").setup {} end
+  }
+
+
 
   -- Debug Adapter Protocol : DAP
   use 'mfussenegger/nvim-dap'
