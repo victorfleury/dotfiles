@@ -149,3 +149,9 @@ function stm() {
       ssh -t vfleury@10.12.12.9 "t; bash --login"
   esac
 }
+
+
+function mkdirr() {
+  mkdir -p $1;
+  cd $1;
+}

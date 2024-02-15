@@ -61,3 +61,4 @@ eval "$(pyenv init -)"
 
 # eval "$(pyenv virtualenv-init -)"
 eval "$(zoxide init bash)"
+eval "$(starship init bash)"

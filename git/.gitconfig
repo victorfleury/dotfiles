@@ -14,3 +14,6 @@
 [safe]
 	directory = /mnt/vfleury/rdoenv/rdo_animreview_core
 	directory = /mnt/vfleury/rdoenv/rdo_animation_publisher
+[rerere]
+	enabled = true
+

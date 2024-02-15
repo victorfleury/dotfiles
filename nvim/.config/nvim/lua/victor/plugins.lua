@@ -46,6 +46,7 @@ return require('packer').startup(function(use)
   use 'sainnhe/everforest' -- Theme 
   use 'sheerun/vim-polyglot'
   use 'nvim-lua/plenary.nvim' -- Telescope dependencies
+  use 'tpope/vim-fugitive' -- Fugitive
   use 'lewis6991/gitsigns.nvim' -- Git indicators
   use 'nvim-telescope/telescope.nvim' -- Fuzzy finder
   use 'BurntSushi/ripgrep' -- Needs to be installed via yum as well
@@ -61,6 +62,8 @@ return require('packer').startup(function(use)
     "windwp/nvim-autopairs",
     config = function() require("nvim-autopairs").setup {} end
   }
+
+  use 'jiangmiao/auto-pairs'
 
 
 

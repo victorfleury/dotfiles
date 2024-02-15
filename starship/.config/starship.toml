@@ -1,0 +1,80 @@
+#format = """
+#$username\
+#$hostname\
+#$directory\
+#[→](fg:#DA627D bg:#FCA17D)\
+#$git_branch\
+#$git_state\
+#$time\
+#\n[\\$](bold) 
+#"""
+
+format = """
+[](fg:#3A94C5)\
+$username\
+$hostname\
+[ ](fg:#3A94C5 bg:#8DA101)\
+$directory\
+[](fg:#8DA101 bg:#F57D26)\
+$git_branch\
+$git_status\
+[](fg:#F57D26)\
+$python\
+$docker_context\
+$golang\
+$rust\
+[ $time]()\
+\n[\\$](bold) 
+"""
+
+add_newline = false
+
+[username]
+#  e0b6
+#style_user = "bold fg:#D3C6AA bg:#3A94C5"
+style_user = "bold fg:255 bg:#3A94C5"
+format = "[$user]($style)"
+show_always = true
+
+[hostname]
+#  e0b4
+ssh_only = false
+#style = "bold fg:#D3C6AA bg:#3A94C5"
+style = "bold fg:255 bg:#3A94C5"
+#format = "[@$hostname]($style)[](fg:#3A94C5 bg:#93B259)"
+#format = "[@$hostname]($style)[ ](fg:#3A94C5 bg:#8DA101)"
+format = "[@$hostname]($style)"
+
+[directory]
+#style = "bold bg:#93B259"
+style = "bold fg:255 bg:#8DA101"
+format = "[$path]($style)"
+truncation_length = 2
+truncate_to_repo = false
+truncation_symbol = "…/"
+
+[git_branch]
+style = "bold fg:255 bg:#F57D26"
+format = "[ $symbol$branch]($style)"
+
+[git_status]
+style = "bold fg:255 bg:#F57D26"
+ahead = '⇡${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+behind = '⇣${count}'
+format = "[ $all_status$ahead_behind]($style)"
+
+[golang]
+symbol = ""
+format = " via $symbol"
+
+[python]
+detect_extensions = ["py"]
+
+[docker_context]
+only_with_files = true
+symbol="󰡨"
+#format = "via docker !!"
+
+[time]
+disabled=false
