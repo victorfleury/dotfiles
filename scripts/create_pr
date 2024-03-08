@@ -48,14 +48,11 @@ PR_TEMPLATE = """#### Purpose of the PR
 
 DEFAULT_REVIEWERS = [
     {"user": {"name": "bramoul"}},
-    {"user": {"name": "jcarvalho"}},
     {"user": {"name": "agjolly"}},
-    {"user": {"name": "andyl"}},
     {"user": {"name": "jdubuisson"}},
     {"user": {"name": "alima"}},
     {"user": {"name": "lchikar"}},
     {"user": {"name": "ldepoix"}},
-    {"user": {"name": "elabrosse"}},
 ]
 
 USER_URL_TEMPLATE = "https://bitbucket.rodeofx.com/rest/api/1.0/users/vfleury/repos/home_repo/pull-requests"  # noqa
@@ -194,14 +191,14 @@ def request_data():
         filled_pr.write(description)
         LOG.debug("[i] Filled PR saved at {}".format(filled_pr.name))
     title = repo.commit().message
-    print {
+    print({
         "description": description,
         "fromRef": {"id": current_branch.path},
         "toRef": {"id": default_destination_branch},
         "state": "OPEN",
         "title": title,
         "reviewers": DEFAULT_REVIEWERS,
-    }
+    })
     return {
         "description": description,
         "fromRef": {"id": current_branch.path},
@@ -228,7 +225,6 @@ def main(args):
     if args.dryrun:
         LOG.info("[*] Dry run is on, stopping there.")
         return
-
     if publish_pr(url, data):
         LOG.info("[*] Successfully published the PR")
 
@@ -239,7 +235,7 @@ if __name__ == "__main__":
         "--dryrun",
         default=False,
         action="store_true",
-        help="Run through the process without creating the PR",
+        help="Run through the process without creating the PRj lkjdfkjsafdlkjsadflkasjdflksj",
     )
 
     args = parser.parse_args()

@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"strings"
@@ -76,7 +80,10 @@ func main() {
 	fmt.Println("Editor is", get_editor())
 	//editor_input, err := raw_input_editor(PR_TEMPLATE, "vim")
 	//fmt.Println("Raw input ", editor_input)
-	request_data()
+	data := request_data()
+	if *publish {
+		publish_pr(url, data)
+	}
 }
 
 func get_token() string {
@@ -236,4 +243,63 @@ func request_data() []byte {
 	fmt.Printf("%s\n", json_data)
 
 	return json_data
+}
+
+func publish_pr(url string, data []byte) {
+	fmt.Println("Publishing PR")
+	log.Printf("URL is %s", url)
+	log.Printf("Data is %s", data)
+
+	headers := map[string]string{
+		"authorization": "Bearer "+get_token(),
+		"content-type":  "application/json",
+	}
+
+	payload, err := json.Marshal(data)
+	if err != nil {
+		log.Fatal("Oh no")
+	}
+	fmt.Println(headers)
+	//fmt.Println(payload)
+
+	client := &http.Client{}
+
+	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(payload))
+	if err != nil {
+		panic(err)
+	}
+
+	req.Header.Set("Authorization", headers["authorization"])
+	req.Header.Set("Content-Type", "application/json")
+
+	fmt.Println(req.Header)
+
+	res, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println(string(body))
+
+}
+
+func test_publish_pr(url string, data []byte) {
+	url = "http://example.com"
+	req, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	defer req.Body.Close()
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println(string(body))
 }
