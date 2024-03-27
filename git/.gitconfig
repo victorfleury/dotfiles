@@ -8,7 +8,7 @@
         interactive = auto
 [core]
         editor = nvim
-        excludesfile = /home/victor/.gitignore
+	excludesfile = /home/victor/.gitignore
 [help]
         autocorrect = 10
 [safe]

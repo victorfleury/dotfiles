@@ -146,7 +146,15 @@ function stm() {
       echo "Running : ssh -t vfleury@10.12.12.9 \"tmux at -t $1; bash --login\""
       ;;
     *)
-      ssh -t vfleury@10.12.12.9 "t; bash --login"
+      _host=$(echo -e "centos\nrocky" | fzf)
+      echo $_host
+      if [[ $_host == "centos" ]];then
+        _host="mtl-vdi-wrk117l"
+      else
+        _host="mtl-vdi-wrk273l"
+      fi
+      echo "About to run : ssh -t vfleury@$_host"
+      ssh -t vfleury@$_host "t; bash --login"
   esac
 }
 
