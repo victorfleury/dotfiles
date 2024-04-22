@@ -1,9 +1,4 @@
 #!/usr/bin/env sh
-
-function hello_world() {
-	echo "Hello world";
-}
-
 function short_branch_name() {
     BRANCH=`git rev-parse --abbrev-ref HEAD 2>/dev/null`
     if [ ! $BRANCH ]; then
@@ -83,55 +78,6 @@ function fetchout() {
     fi
 }
 
-function www() {
-  #while test $# -gt 0; do
-  while [ "$1" != "" ]; do
-    case $1 in
-      -h| --help)
-        echo "Super duper script to log into work and open nvim to the given folder"
-        echo " "
-        echo "options:"
-        echo "-h, --help         Displays the help message and quits"
-        echo "-d, --directory    SSH into given directory"
-        echo "-t, --tmux-session SSH to the machine and connect to TMUX session" 
-        echo "-n, --nvim         Launches NVIM. Attaches to the matching docker container from -d"
-        break
-        ;;
-      -d | --directory)
-        shift
-        if test $# -gt 0; then
-          echo "-d You have called the command with $1"
-        else
-          echo "-d was not specified, ssh into default dir"
-        fi
-        DIRECTORY=$1
-        ;;
-      --nvim)
-        echo "You have called the script wioth nvim $2"
-        LAUNCH_NVIM=true
-        ;;
-      *)
-        echo "Default behaviour"
-        break
-    esac
-    shift
-  done
-
-  if [[ -z $DIRECTORY && -z $TMUX_SESSION ]];then
-    echo "Running : ssh -t vfleury@mtl-vdi-wrk117l"
-    ssh -t vfleury@mtl-vdi-wrk117l
-  fi
-  if [[ -n $DIRECTORY && ! $TMUX_SESSION ]]; then
-    echo "THIS IS DIRECTORY : ${DIRECTORY}"
-    folder="~/rdoenv/"$DIRECTORY
-    if [ $LAUNCH_NVIM ];then
-      name=$DIRECTORY
-      echo "Running : ssh -t vfleury@mtl-vdi-wrk117l \"cd ${folder}; launch_container ${name}; bash --login\""
-      ssh -t vfleury@mtl-vdi-wrk117l "cd ${folder}; launch_container ${name}; bash --login"
-    fi
-  fi
-}
-
 
 function stm() {
   case $1 in
@@ -159,7 +105,14 @@ function stm() {
 }
 
 
+# Create a directory and cd into it directly
 function mkdirr() {
   mkdir -p $1;
   cd $1;
+}
+
+
+# Checkout using fzf
+function gco() {
+  _fzf_git_each_ref --no-multi | xargs git checkout
 }

@@ -5,5 +5,17 @@
 return {
   'tpope/vim-fugitive', -- Fugitive
   'pocco81/auto-save.nvim', -- Hello world
-  'preservim/nerdcommenter', -- Comments
+  'preservim/nerdcommenter', -- Completions
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^4', -- Recommended
+    ft = { 'rust' },
+  },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+    -- use opts = {} for passing setup options
+    -- this is equalent to setup({}) function
+  },
 }

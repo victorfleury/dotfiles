@@ -1,6 +1,6 @@
 [user]
-        name = Victor Fleury
-        email = vfleury@rodeofx.com
+        name = victorfleury
+        email = victor.fleury@gmail.com
 [color]
         diff = auto
         status = auto
@@ -11,9 +11,6 @@
 	excludesfile = /home/victor/.gitignore
 [help]
         autocorrect = 10
-[safe]
-	directory = /mnt/vfleury/rdoenv/rdo_animreview_core
-	directory = /mnt/vfleury/rdoenv/rdo_animation_publisher
 [rerere]
 	enabled = true
 
